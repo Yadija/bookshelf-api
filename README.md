@@ -5,7 +5,7 @@ Website ini dibuat untuk memenuhi submission <i>belajar membuat aplikasi back-en
 ## 🚀Installation
 
 - Clone this repository
-  - `git clone https://github.com/yadija/bookshelf-api.git`
+  - `git clone https://github.com/Yadija/bookshelf-api.git`
 - Install dependencies
   - `npm install / yarn install`
 - Running API
