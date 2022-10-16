@@ -1,6 +1,7 @@
 const { nanoid } = require("nanoid");
 const bookshelf = require("./bookshelf");
 
+// handler untuk menambahkan buku
 const addBookshelfHandler = (request, h) => {
   const { 
     name, 
@@ -74,4 +75,76 @@ const addBookshelfHandler = (request, h) => {
   return response;
 };
 
-module.exports = { addBookshelfHandler };
+// handler untuk mendapatkan semua buku
+const getAllBookshelfHandler = (request, h) => {
+  const { name, reading, finished } = request.query;
+
+  const getResponse = (books) => {
+    const response = h.response({
+          status: "success",
+          data: {
+            bookshelf: books.map((book) => ({
+              id: book.id,
+              name: book.name,
+              publisher: book.publisher
+            }))
+          }
+        });
+        response.code(200);
+        return response;
+  }
+
+  if(name) {
+      const filteredBooks = bookshelf.filter((book) => {
+        return book.name.toLowerCase().includes(name.toLowerCase());
+      });
+
+      return getResponse(filteredBooks);
+    }
+
+  if(reading) {
+      const filteredBooks = bookshelf.filter((book) => {
+      return Number(book.reading) === Number(reading)
+    });
+
+      return getResponse(filteredBooks);
+    }
+  if(finished) {
+      const filteredBooks = bookshelf.filter((book) => {
+      return Number(book.finished) === Number(finished)
+    });
+
+      return getResponse(filteredBooks);
+    }
+
+    return getResponse(bookshelf);
+};
+
+// handler untuk mendapatkan buku berdasarkan id
+const getBookshelfByIdHandler = (request, h) => {
+  const { bookId } = request.params;
+
+  const book = bookshelf.filter((b) => b.id === bookId)[0];
+
+  if(book !== undefined) {
+    return {
+      status: 'success',
+      data: {
+        book
+      }
+    }
+  }
+
+  const response = h.response({
+    status: 'fail',
+    message: 'Buku tidak ditemukan'
+  });
+  response.code(404);
+  return response;
+};
+
+module.exports = { 
+  addBookshelfHandler, 
+  getAllBookshelfHandler, 
+  getBookshelfByIdHandler 
+};
